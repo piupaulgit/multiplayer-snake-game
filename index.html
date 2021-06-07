@@ -5,10 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200&family=Lobster&display=swap" rel="stylesheet">
     <title>Document</title>
 </head>
 <body onload="game.start()">
-    <canvas id="snakeBattle" class="snakeBattle"></canvas>
+    <div class="initial-screen" id="initialScreen">
+        <div class="initial-screen-center">
+            <h1>MultiPlayer Snake Game</h1>
+            <div class="text-center">
+                <button class="btn" id="createNewGameBtn">Create New Game</button>
+            </div>
+            <div class="text-center px-20">
+                <strong>OR</strong>
+            </div>
+            <div class="d-flex flex-dir-column">
+                <input type="text" placeholder="Enter Game Code" class="game-code" id="gameCodeInput">
+                <button class="btn" id="joinGameBtn">Start</button>
+            </div>
+        </div>
+    </div>
+    <div class="gameCode" id="gameCode">
+        New Game Room No : <strong><span id="displayGameCode"></span></strong>
+    </div>
+    <div class="gameScreen" id="gameScreen">
+        <canvas id="snakeBattle" class="snakeBattle"></canvas>
+    </div>
 
     <script src="./js/settings.js"></script>
     <script src="./js/utils.js"></script>
@@ -20,11 +42,53 @@
     <script>
         const socket = io("http://localhost:3300")
         socket.on('init', handleInit)
+        socket.on('gameCode', handleDisplayGameCode )
+        document.addEventListener('keydown', keydown)
 
+        function keydown(e){
+            socket.emit('keydown', e.keyCode)
+        }
         function handleInit(msg) {
             console.log(msg)
         }
 
+        // DOM ELEMENT
+        initialScreen = document.getElementById('initialScreen')
+        gameScreen = document.getElementById('gameScreen')
+        newGameBtn = document.getElementById('createNewGameBtn')
+        gameCode = document.getElementById('gameCode')
+        displayGameCode =  document.getElementById('displayGameCode');
+        gameCodeInput = document.getElementById('gameCodeInput')
+        joinGameBtn = document.getElementById('joinGameBtn')
+
+
+        // EVENT LISTENING
+        newGameBtn.addEventListener('click', startNewGame);
+        joinGameBtn.addEventListener('click', joinGame)
+
+
+        // FUNCTIONS
+        function handleDisplayGameCode(roomNumber){
+            displayGameCode.innerText = roomNumber;
+            initialScreen.style.display = 'none';
+            gameCode.style.display = 'block'
+        }
+
+        function startNewGame(){
+            socket.emit('newGame');
+            initGame()
+        }
+
+        function joinGame(){
+            const roomNumber = gameCodeInput.value;
+            socket.emit('joinGame', roomNumber);
+            initGame()
+        }
+
+        function initGame() {
+            gameScreen.style.display = 'block';
+            
+        }
     </script>
 </body>
 </html>

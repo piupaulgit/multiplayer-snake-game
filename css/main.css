@@ -2,7 +2,65 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: "Karla", sans-serif;
 }
+.initial-screen {
+  height: 100vh;
+  width: 100vw;
+  background-color: #0fbcf9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.initial-screen-center h1 {
+  font-family: "Lobster", cursive;
+  font-size: 40px;
+  font-weight: normal;
+}
+.btn {
+  background-color: #fff;
+  padding: 20px 30px;
+  border: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  color: #22313f;
+  transition: all 0.5s;
+}
+.btn:hover {
+  background-color: #102772;
+  color: #fff;
+}
+.text-center {
+  text-align: center;
+}
+.px-20 {
+  padding: 20px 0;
+}
+.d-flex {
+  display: flex;
+}
+.flex-dir-column {
+  flex-direction: column;
+  gap: 20px;
+}
+.game-code {
+  padding: 10px 10px;
+  border-radius: 3px;
+  background-color: #fff;
+  border: 0;
+}
+#gameScreen {
+  display: none;
+}
+.gameCode {
+  padding: 20px;
+  text-align: center;
+}
+#gameCode {
+  display: none;
+}
+
 .snakeBattle {
-  background-color: #333;
+  background-color: #22313f;
 }
