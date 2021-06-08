@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200&family=Lobster&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <title>MultiPlayer Snake Game</title>
 </head>
 <body onload="game.start()">
     <div class="initial-screen" id="initialScreen">
@@ -43,13 +43,15 @@
         const socket = io("http://localhost:3300")
         socket.on('init', handleInit)
         socket.on('gameCode', handleDisplayGameCode )
+        let playerNumber;
         document.addEventListener('keydown', keydown)
 
         function keydown(e){
             socket.emit('keydown', e.keyCode)
         }
-        function handleInit(msg) {
-            console.log(msg)
+        function handleInit(number) {
+            playerNumber = number;
+            console.log(playerNumber)
         }
 
         // DOM ELEMENT
