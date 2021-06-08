@@ -51,7 +51,7 @@
         }
         function handleInit(number) {
             playerNumber = number;
-            console.log(playerNumber)
+            initGame()
         }
 
         // DOM ELEMENT
@@ -78,16 +78,15 @@
 
         function startNewGame(){
             socket.emit('newGame');
-            initGame()
         }
 
         function joinGame(){
             const roomNumber = gameCodeInput.value;
             socket.emit('joinGame', roomNumber);
-            initGame()
         }
 
         function initGame() {
+            handleDisplayGameCode(roomNumber)
             gameScreen.style.display = 'block';
             
         }

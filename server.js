@@ -15,7 +15,6 @@ const io = new Server(httpServer, {
 const clientRooms = {}
 
 io.on('connection', client => {
-    client.emit('init', {data: 'hello'})
     client.on('newGame', handleNewGame)
     client.on('joinGame', handleJoinGame)
     client.on('keydown', handleKeyDown)
@@ -44,8 +43,19 @@ io.on('connection', client => {
     }
 
     function handleJoinGame(roomNumber){
-      const room = io.sockets.adapter.rooms.has(roomNumber);
-      console.log(room,'rrom')
+      const room = io.sockets.adapter.rooms[roomNumber];
+      if(room){
+        socket.join(roomNumber);
+      }
+
+      // user join the room after creating room
+      client.join(roomNumber);
+
+      // player one
+      client.number = 2;
+
+      // send player info to server
+      client.emit('init', 2)
     }
 
     function handleKeyDown(keyCode){
