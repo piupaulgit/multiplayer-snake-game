@@ -43,13 +43,15 @@ io.on('connection', client => {
     }
 
     function handleJoinGame(roomNumber){
-      const room = io.sockets.adapter.rooms[roomNumber];
+      const room = io.sockets.adapter.rooms.has(roomNumber)
+      console.log(room)
       if(room){
-        socket.join(roomNumber);
+        client.join(roomNumber);
       }
-
-      // user join the room after creating room
-      client.join(roomNumber);
+      else{
+        client.emit('wrongGameCode')
+        return
+      }
 
       // player one
       client.number = 2;
