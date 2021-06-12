@@ -121,7 +121,10 @@
             }
             gameCode.style.display = 'none'
             gameState = JSON.parse(gameState);
-            startGame(gameState)
+            requestAnimationFrame(() => {
+                startGame(gameState)
+                console.log('opopopo99')
+            })
         }
     </script>
 </body>
