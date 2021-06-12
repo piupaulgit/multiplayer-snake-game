@@ -5,6 +5,10 @@ const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
 const httpServer = createServer();
 const { makeid } = require('./utils');
+const { FRAME_RATE } = require('./constants');
+const { initGame } = require('./settings');
+
+
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
@@ -12,14 +16,13 @@ const io = new Server(httpServer, {
   }
 });
 
+const state = {}
 const clientRooms = {}
 
 io.on('connection', client => {
     client.on('newGame', handleNewGame)
     client.on('joinGame', handleJoinGame)
     client.on('keydown', handleKeyDown)
-
-
 
     // functions
     function handleNewGame(){
@@ -28,6 +31,8 @@ io.on('connection', client => {
 
       // send this game code to server
       client.emit('gameCode', roomName);
+
+      state[roomName] = initGame();
 
       // assign the gamecode as clientId
       clientRooms[client.id] = roomName;
@@ -40,6 +45,8 @@ io.on('connection', client => {
 
       // send player info to server
       client.emit('init', 1)
+
+     
     }
 
     function handleJoinGame(roomNumber){
@@ -52,12 +59,16 @@ io.on('connection', client => {
         client.emit('wrongGameCode')
         return
       }
+      clientRooms[client.id] = roomNumber;
 
       // player one
       client.number = 2;
 
       // send player info to server
       client.emit('init', 2)
+
+      // start game after second player joins
+      startGameInterval(roomNumber); 
     }
 
     function handleKeyDown(keyCode){
@@ -65,8 +76,16 @@ io.on('connection', client => {
     }
 })
 
-instrument(io, {
-  auth: false
-});
+function startGameInterval(roomName){
+  const intervalId = setInterval(() => {
+    emitGameState(roomName, state[roomName])
+    clearInterval(intervalId);
+  }, 1000 / FRAME_RATE);
+}
 
+function emitGameState(room, gameState){
+  // Send this event to everyone in the room.
+  io.sockets.in(room)
+    .emit('gameState', JSON.stringify(gameState));
+}
 io.listen(3300)

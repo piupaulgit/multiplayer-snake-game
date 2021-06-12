@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200&family=Lobster&display=swap" rel="stylesheet">
     <title>MultiPlayer Snake Game</title>
 </head>
-<body onload="game.start()">
+<body>
     <div class="initial-screen" id="initialScreen">
         <div class="initial-screen-center">
             <h1>MultiPlayer Snake Game</h1>
@@ -48,6 +48,7 @@
         socket.on('init', handleInit)
         socket.on('gameCode', handleDisplayGameCode )
         socket.on('wrongGameCode', handleWrongGameCode)
+        socket.on('gameState', handleGameState)
         let playerNumber;
 
         
@@ -112,6 +113,15 @@
             initialScreen.style.display = 'flex';
             worngGameCode.style.display = "none"
             gameCodeInput.value = ''
+        }
+
+        function handleGameState(gameState){
+            if(!gameState){
+                return;
+            }
+            gameCode.style.display = 'none'
+            gameState = JSON.parse(gameState);
+            startGame(gameState)
         }
     </script>
 </body>
